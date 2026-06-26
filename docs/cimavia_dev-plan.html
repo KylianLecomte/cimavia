@@ -448,6 +448,8 @@
               { id: "p0-9", text: "Prisma 7 + PostgreSQL (Docker local)", detail: "docker postgres:18-alpine. prisma.config.ts, adapter @prisma/adapter-pg + pg. Client dans generated/prisma/" },
               { id: "p0-10", text: "nestjs-pino → Axiom + Sentry", detail: "Logs JSON structurés, instrument.ts 1er import de main.ts, SentryExceptionFilter custom" },
               { id: "p0-11", text: "Env + validation Zod au boot", detail: "ConfigModule + Zod : l'API refuse de démarrer si une variable manque ou est mal typée" },
+              { id: "p0-15", text: "Endpoint santé GET /health (+ /health/ready)", detail: "Liveness (200, sans dépendance) + readiness avec ping DB Prisma (503 si down). Cible du smoke check CI prod (P7-6) et des probes d'hébergement" },
+              { id: "p0-16", text: "Documentation OpenAPI / Swagger (/docs)", detail: "@nestjs/swagger sur l'adapter Fastify (+ @fastify/static). DocumentBuilder dans main.ts, UI sur /docs, schéma sur /docs-json" },
             ]
           },
           {
