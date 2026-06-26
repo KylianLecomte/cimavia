@@ -1,0 +1,19 @@
+{
+  "extends": "@cmv/tsconfig/base",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023"],
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@cmv/shared": ["../../packages/shared/src/index.ts"],
+      "@cmv/tokens": ["../../packages/tokens/src/index.ts"]
+    }
+  },
+  "include": ["app", "feature", "shared", "global.d.ts", "nativewind-env.d.ts"],
+  "exclude": ["node_modules"]
+}

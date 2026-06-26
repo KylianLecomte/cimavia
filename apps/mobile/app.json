@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "cimavia",
+    "slug": "cimavia",
+    "version": "1.0.0",
+    "scheme": "cimavia",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "fr.cimavia.app"
+    },
+    "android": {
+      "package": "fr.cimavia.app"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": ["expo-router", "expo-font"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
