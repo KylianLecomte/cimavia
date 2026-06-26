@@ -18,6 +18,12 @@ jobs:
   quality:
     name: Lint + Typecheck + Test
     runs-on: ubuntu-latest
+    env:
+      # DATABASE_URL fictive pour que prisma generate puisse charger prisma.config.ts
+      # prisma generate ne se connecte pas à la BDD — il lit uniquement schema.prisma
+      # Sans cette variable, env() de Prisma 7 throw pendant postinstall
+      DATABASE_URL: postgresql://cimavia_e2e:cimavia_dev_e2e@localhost:5432/cimavia_db_e2e
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
