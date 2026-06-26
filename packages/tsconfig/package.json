@@ -1,0 +1,15 @@
+{
+  "name": "@cmv/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./base": "./base.json",
+    "./nestjs": "./nestjs.json",
+    "./react": "./react.json"
+  },
+  "files": [
+    "base.json",
+    "nestjs.json",
+    "react.json"
+  ]
+}
