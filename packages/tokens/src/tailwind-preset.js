@@ -5,119 +5,104 @@
  * Source de vérité unique des tokens du design system Cimavia
  * (« Granite A · Rondeur 8px · Type A »).
  *
+ * Convention (CLAUDE.md) : TOUS les tokens custom sont préfixés `cmv`.
+ *   couleurs  -> bg-cmv-*, text-cmv-*, border-cmv-*
+ *   typo      -> font-cmv-*, text-cmv-<role>
+ *   rayons    -> rounded-cmv-*
+ *   spacing   -> p-cmv-*, gap-cmv-*, ...
+ *
  * Contraintes :
- *  - Tailwind CSS v3.4  (NativeWind 4 ne supporte pas encore Tailwind v4).
- *  - Couleurs en hex brut (pas de variables CSS) pour rester lisible par
- *    NativeWind ET par le web. Thème sombre unique pour le MVP.
- *  - Côté web : components.json -> "tailwind": { "cssVariables": false },
- *    pour que les primitives shadcn/ui consomment ces couleurs directement.
+ *   - Tailwind CSS v3.4 (NativeWind 4 ne supporte pas Tailwind v4).
+ *   - Hex bruts (pas de variables CSS) : lisibles par NativeWind ET le web.
+ *     Thème sombre unique pour le MVP.
+ *
+ * shadcn/ui (web) : garder le mode `cssVariables: true` et mapper la palette
+ *   granite dans apps/web/src/index.css. Les primitives shadcn conservent
+ *   ainsi leur contrat (bg-background, etc.) SANS introduire de token non
+ *   préfixé dans ce preset. Les composants Cmv* utilisent les classes cmv-.
  *
  * Consommation :
- *  apps/web/tailwind.config.js     -> presets: [require('@cmv/tokens/tailwind-preset')]
- *  apps/mobile/tailwind.config.js  -> presets: [require('@cmv/tokens/tailwind-preset')]
+ *   apps/web/tailwind.config.js     -> presets: [require('@cmv/tokens/tailwind-preset')]
+ *   apps/mobile/tailwind.config.js  -> presets: [require('@cmv/tokens/tailwind-preset')]
  */
 
-const granite = {
-  "bg-0": "#0A0F14", // fond le plus profond
-  "bg-1": "#0E141A", // fond surélevé / zones "muted"
-  surface: "#141D25", // cartes
-  "surface-hi": "#1C2630", // cartes survolées / popovers / segments actifs
-  border: "#2B3742",
-  "border-hi": "#3A4854",
-};
+const cmv = {
+  // Neutres · Granite
+  bg: {
+    0: "#0A0F14", // fond le plus profond        -> bg-cmv-bg-0
+    1: "#0E141A", // fond surélevé / "muted"      -> bg-cmv-bg-1
+  },
+  surface: {
+    DEFAULT: "#141D25", // cartes                 -> bg-cmv-surface
+    hi: "#1C2630", // hover / popover / segment actif -> bg-cmv-surface-hi
+  },
+  border: {
+    DEFAULT: "#2B3742", // -> border-cmv-border
+    hi: "#3A4854", // -> border-cmv-border-hi
+  },
 
-const text = {
-  hi: "#DCEFF3", // texte principal
-  mid: "#AAB6C2", // texte secondaire
-  lo: "#6B93A0", // texte tertiaire — contraste AA limite : réservé aux métadonnées
-};
+  // Texte (sur fond sombre)
+  text: {
+    hi: "#DCEFF3", // principal     -> text-cmv-text-hi
+    mid: "#AAB6C2", // secondaire    -> text-cmv-text-mid
+    lo: "#6B93A0", // tertiaire — contraste AA limite, métadonnées seulement
+  },
 
-const accent = {
-  DEFAULT: "#C2603A", // terracotta — action primaire
-  hi: "#D07049", // hover / état actif
-  soft: "rgba(194, 96, 58, 0.16)", // accent à 16% — fonds discrets
-};
-
-const semantic = {
-  success: "#4E9A6A",
-  warning: "#D6A23F",
-  error: "#D2564B",
+  // Accent & sémantiques
+  accent: {
+    DEFAULT: "#C2603A", // action primaire -> bg-cmv-accent
+    hi: "#D07049", // hover / actif   -> bg-cmv-accent-hi
+    soft: "rgba(194, 96, 58, 0.16)", // fond discret (accent @16%) -> bg-cmv-accent-soft
+  },
+  success: "#4E9A6A", // -> text-cmv-success
+  warning: "#D6A23F", // -> text-cmv-warning
+  error: "#D2564B", // -> text-cmv-error
 };
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   theme: {
     extend: {
-      colors: {
-        // —— Échelle canonique (à utiliser dans les composants Cmv*) ——
-        granite,
-        text,
-        accent,
-        success: semantic.success,
-        warning: semantic.warning,
-        error: semantic.error,
+      colors: { cmv },
 
-        // —— Alias shadcn/ui (cssVariables: false) ——
-        background: granite["bg-0"],
-        foreground: text.hi,
-        card: granite.surface,
-        "card-foreground": text.hi,
-        popover: granite["surface-hi"],
-        "popover-foreground": text.hi,
-        primary: accent.DEFAULT,
-        "primary-foreground": text.hi,
-        secondary: granite["surface-hi"],
-        "secondary-foreground": text.hi,
-        muted: granite["bg-1"],
-        "muted-foreground": text.mid,
-        destructive: semantic.error,
-        "destructive-foreground": text.hi,
-        input: granite.border,
-        ring: accent.DEFAULT,
-        // (la couleur "border" est déjà fournie via colors.granite.border ;
-        //  on l'expose aussi à plat pour les utilitaires border-border de shadcn)
-        border: granite.border,
-      },
-
-      // Familles logiques. Les NOMS réels enregistrés diffèrent par plateforme :
-      //  - web    : @fontsource ou next/font  -> 'Space Grotesk', 'IBM Plex Sans', 'IBM Plex Mono'
-      //  - mobile : @expo-google-fonts        -> p.ex. 'SpaceGrotesk_600SemiBold'
-      // Le chargement des polices se fait PAR APP ; ne pas le mettre ici.
+      // Familles logiques. Noms réels enregistrés PAR APP :
+      //   web    : @fontsource / next/font -> 'Space Grotesk', 'IBM Plex Sans', 'IBM Plex Mono'
+      //   mobile : @expo-google-fonts      -> ex. 'SpaceGrotesk_600SemiBold'
+      // Le chargement des polices ne va PAS ici.
       fontFamily: {
-        display: ["Space Grotesk", "system-ui", "sans-serif"],
-        heading: ["Space Grotesk", "system-ui", "sans-serif"],
-        sans: ["IBM Plex Sans", "system-ui", "sans-serif"],
-        mono: ["IBM Plex Mono", "ui-monospace", "monospace"],
+        "cmv-display": ["Space Grotesk", "system-ui", "sans-serif"],
+        "cmv-heading": ["Space Grotesk", "system-ui", "sans-serif"],
+        "cmv-sans": ["IBM Plex Sans", "system-ui", "sans-serif"],
+        "cmv-mono": ["IBM Plex Mono", "ui-monospace", "monospace"],
       },
 
-      // Rôles typographiques (taille / interligne / graisse / interlettrage).
+      // Rôles typographiques -> text-cmv-display, text-cmv-title, ...
       fontSize: {
-        display: ["40px", { lineHeight: "44px", letterSpacing: "-0.025em", fontWeight: "700" }],
-        title: ["24px", { lineHeight: "28px", fontWeight: "600" }],
-        subtitle: ["16px", { lineHeight: "21px", fontWeight: "600" }],
-        body: ["15px", { lineHeight: "25px", fontWeight: "400" }],
-        caption: ["13px", { lineHeight: "18px", fontWeight: "500" }],
+        "cmv-display": ["40px", { lineHeight: "44px", letterSpacing: "-0.025em", fontWeight: "700" }],
+        "cmv-title": ["24px", { lineHeight: "28px", fontWeight: "600" }],
+        "cmv-subtitle": ["16px", { lineHeight: "21px", fontWeight: "600" }],
+        "cmv-body": ["15px", { lineHeight: "25px", fontWeight: "400" }],
+        "cmv-caption": ["13px", { lineHeight: "18px", fontWeight: "500" }],
       },
 
-      // Rayons (md = 8px = "Rondeur 8px" verrouillée).
+      // Rayons -> rounded-cmv-md (= 8px = "Rondeur 8px" verrouillée)
       borderRadius: {
-        sm: "6px",
-        md: "8px",
-        lg: "12px",
-        xl: "16px",
-        pill: "999px",
+        "cmv-sm": "6px",
+        "cmv-md": "8px",
+        "cmv-lg": "12px",
+        "cmv-xl": "16px",
+        "cmv-pill": "999px",
       },
 
-      // Échelle d'espacement Base 4 du design system (ajoutée, pas substituée).
-      // À privilégier : p-sm, gap-md, etc.
+      // Échelle Base 4 -> p-cmv-md, gap-cmv-lg, ...
       spacing: {
-        xs: "4px",
-        sm: "8px",
-        md: "12px",
-        lg: "16px",
-        xl: "22px",
-        "2xl": "32px",
-        "3xl": "48px",
+        "cmv-xs": "4px",
+        "cmv-sm": "8px",
+        "cmv-md": "12px",
+        "cmv-lg": "16px",
+        "cmv-xl": "22px",
+        "cmv-2xl": "32px",
+        "cmv-3xl": "48px",
       },
     },
   },
