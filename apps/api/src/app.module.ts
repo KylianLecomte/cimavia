@@ -2,6 +2,7 @@ import { apiEnvSchema } from "@cmv/shared";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { LoggerModule } from "nestjs-pino";
+import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./infra/prisma/prisma.module";
 
 @Module({
@@ -28,6 +29,7 @@ import { PrismaModule } from "./infra/prisma/prisma.module";
       },
     }),
     PrismaModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
