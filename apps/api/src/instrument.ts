@@ -27,9 +27,6 @@ Sentry.init({
 
   // Environnement — apparaît dans le dashboard Sentry pour filtrer les issues
   environment: process.env.NODE_ENV || "development",
-
-  // Ne pas envoyer d'events si pas de DSN configuré (dev sans compte Sentry)
   enabled: !!process.env.SENTRY_DSN,
-
   sendDefaultPii: true,
 });
