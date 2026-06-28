@@ -605,16 +605,17 @@
     ];
 
     // Avancement réel — P0 (mis à jour manuellement, pas de persistance localStorage).
-    // Non cochés volontairement : p0-4 (flow GitLab — branches staging/production créées et
-    // poussées, protection des branches à appliquer côté GitHub), p0-7 (secrets GitHub —
-    // externe, ajoutés phase par phase). p0-10 vérifié de bout en bout (issue Sentry reçue +
-    // logs visibles dans le dataset Axiom).
+    // P0 = 16/16. Notes : p0-4 = GitLab flow opérationnel (branches main/staging/production +
+    // rulesets : main push direct + signatures, staging/prod en PR + checks). p0-7 = SONAR_TOKEN
+    // en place (CI verte) ; les autres secrets sont ajoutés phase par phase par design.
     const checked = {
       "p0-1": true,
       "p0-2": true,
       "p0-3": true,
+      "p0-4": true,
       "p0-5": true,
       "p0-6": true,
+      "p0-7": true,
       "p0-8": true,
       "p0-9": true,
       "p0-10": true,

@@ -42,30 +42,12 @@ pnpm --filter @cmv/api exec prisma migrate dev
 
 ## Conventions
 
-- Lint/format : **Biome** (pas ESLint/Prettier)
+- Lint/format : **Biome**
 - Tests : **Vitest**
-- Commits : **Conventional Commits** (sujet en minuscule)
+- Commits : **Conventional Commits**
 - Composants design system : préfixe `Cmv`
 - Packages : scope `@cmv/*`
 
-Voir `docs/architecture-choice.md` pour les règles détaillées.
-
-## Git flow (GitLab Flow)
-
-Merge unidirectionnel `feature/* → main → staging → production`.
-
-- `feature/<slug>` : branche de travail, ouverte en PR vers `main`.
-- `main` : intégration continue (CI + SonarCloud bloquants).
-- `staging` : pré-production, promue depuis `main`.
-- `production` : prod, promue depuis `staging`.
-
-CI (`.github/workflows/`) tourne sur push/PR vers `main`, `staging`, `production`.
-
-### À configurer côté GitHub (UI, une fois)
-
-- **Branch protection** sur `main`, `staging`, `production` : PR obligatoire, checks requis (`CI`, `SonarCloud`), pas de push direct, historique linéaire.
-- **Secrets Actions** (Settings → Secrets and variables → Actions), ajoutés phase par phase :
-  - `SONAR_TOKEN` — SonarCloud (P0, requis maintenant)
-  - `SENTRY_DSN`, `AXIOM_TOKEN`, `AXIOM_DATASET` — observabilité (P0/déploiement)
-  - `DATABASE_URL` — déploiement (P1)
-  - `BETTER_AUTH_SECRET` — auth (P1)
+Voir `docs/architecture-choice.md` pour les règles d'archi détaillées, et
+`CONTRIBUTING.md` pour le workflow de contribution (git flow, commits signés,
+secrets CI, observabilité).
