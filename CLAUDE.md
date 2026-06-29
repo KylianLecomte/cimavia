@@ -56,7 +56,7 @@ Outils : **Turborepo + pnpm** (`pnpm@10.34.4`). Lint/format **Biome** (`2.5.1`, 
 
 ## Règles dures (non négociables)
 
-1. **Multi-tenant** : 1 athlète = **exactement 1 coach** (unicité en base). Toute requête est **scopée à l'acteur courant** via le tenancy guard + **Prisma Client Extension** — jamais par la seule logique applicative. Un coach ne voit que SES athlètes ; un athlète que SES données. Couvrir par des tests e2e d'isolation.
+1. **Multi-tenant** : 1 athlète a **au plus 1 coach** (0 ou 1, unicité en base) ; 1 coach = N athlètes. **MVP** : tout athlète est lié à 1 coach. **Modèle prévu pour 0 coach** (athlète autonome / auto-coaching v1.0) — relation **nullable et réversible** dès le départ. Toute requête est **scopée à l'acteur courant** via le tenancy guard + **Prisma Client Extension** — jamais par la seule logique applicative. Un coach ne voit que SES athlètes ; un athlète (lié ou autonome) que SES données. Couvrir par des tests e2e d'isolation.
 2. **Types métier** : tout ce qui transite par l'API HTTP vit dans **`@cmv/shared`** (DTO). Pas de type métier dupliqué côté app.
 3. **Design system** : composants préfixés **`Cmv`**. **Zéro `#xxxxxx`** hors `@cmv/tokens` / `theme/`. Couleurs exposées en classes `bg-cmv-*` / `text-cmv-*`.
 4. **Pure shells** (mobile) : les fichiers sous `app/` sont du routing ou un shell d'1 ligne `export { Screen as default } from "@/feature/<x>"`. Aucune logique dans `app/`.

@@ -475,7 +475,7 @@
           {
             name: "Rôles & relation", tasks: [
               { id: "p1-4", text: "Rôles coach / athlète", detail: "Champ role sur profile. Routing/affichage conditionnés par rôle (même code web/mobile)" },
-              { id: "p1-5", text: "Relation coach↔athlète (invitation)", detail: "1 athlète = 1 coach (unicité en base), 1 coach = N athlètes. Invitation par lien/code, statut pending/active" },
+              { id: "p1-5", text: "Relation coach↔athlète (invitation)", detail: "1 athlète = au plus 1 coach (0 ou 1, unicité en base), 1 coach = N athlètes. Relation nullable/réversible dès le départ (athlète autonome v1.0). Invitation par lien/code, statut pending/active" },
               { id: "p1-6", text: "Fiche athlète (champ libre)", detail: "Table athlete_sheets : content text, éditable par le coach uniquement" },
             ]
           },

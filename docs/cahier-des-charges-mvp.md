@@ -18,6 +18,7 @@ Centraliser dans une seule application l'ensemble du parcours : planification, e
 
 - **Court terme :** application centrée **escalade**.
 - **Long terme :** ouverture multi-sport possible. Le modèle de données reste *raisonnablement générique* pour ne pas bloquer cette évolution, sans la sur-anticiper.
+- **Athlète autonome (v1.0) :** un athlète peut aussi utiliser l'application **sans coach**, en mode auto-coaching — il crée et débriefe ses propres séances/planifications. Le MVP reste centré sur la relation coach↔athlète ; le modèle de données est conçu pour ne pas bloquer cet usage (voir §3 et §8).
 
 ---
 
@@ -46,7 +47,9 @@ Centraliser dans une seule application l'ensemble du parcours : planification, e
 
 **Règles de relation :**
 - Architecture **multi-tenant** : plusieurs coachs, plusieurs athlètes.
-- Un athlète a **un seul coach** (contrainte d'unicité en base).
+- Un athlète a **au plus un coach** (contrainte d'unicité en base : **0 ou 1**).
+  - **MVP :** tout athlète est lié à exactement 1 coach.
+  - **v1.0 :** un athlète peut être **autonome** (0 coach, auto-coaching). La liaison est **réversible** : un athlète autonome peut rejoindre un coach plus tard, et redevenir autonome si la relation se termine. Quand un coach existe, il reste **unique**.
 - Un coach a **N athlètes**.
 - **Les deux rôles accèdent aux deux clients** (web et mobile) — l'usage diffère, pas les droits d'accès aux plateformes.
 
@@ -59,7 +62,8 @@ Légende : **MVP** = première version livrable · **v1.0** = première version 
 | Fonctionnalité | Version | Notes |
 |----------------|---------|-------|
 | Comptes, rôles, connexion | MVP | email + mot de passe |
-| Liaison coach ↔ athlète (invitation) | MVP | 1 coach par athlète |
+| Liaison coach ↔ athlète (invitation) | MVP | au plus 1 coach par athlète (1 en MVP) |
+| **Athlète autonome** (auto-coaching, sans coach) | v1.0 | 0 coach ; liaison réversible ; l'athlète crée/débriefe ses propres séances |
 | Création d'exercices + documents joints | MVP | PDF/image/lien |
 | Composition de séances | MVP | liste ordonnée d'exercices |
 | Planification (nombre de semaines **libre**) | MVP | semaines type entraînement / décharge |
@@ -92,6 +96,7 @@ Légende : **MVP** = première version livrable · **v1.0** = première version 
 - Inscription / connexion email + mot de passe (OAuth en option v1.0).
 - Rôle attribué à l'inscription (coach / athlète).
 - Liaison : le coach invite (lien ou code), l'athlète rejoint → relation unique.
+- **Athlète autonome (v1.0) :** un athlète peut rester **sans coach** et s'auto-coacher (création de ses propres exercices/séances/planifications, débrief). La liaison à un coach reste possible plus tard et **réversible** (voir §3).
 
 ### 5.2 Bibliothèque d'exercices (coach)
 - Exercice : titre, description, catégorie (ex. *renfo*, *grimpe*, *technique*).
@@ -291,9 +296,11 @@ Deux niveaux à ne pas confondre :
 - `coach_id`, `athlete_id`, `period` (ex. `2026-07`), `amount_cents` int, `currency`, `status` enum(`pending`,`paid`), `issued_at`, `due_date`, `paid_at`, `note`
 
 ### 8.2 Relations clés
-- `coach_athlete.athlete_id` unique → garantit **1 coach par athlète**.
+- `coach_athlete.athlete_id` unique → garantit **au plus 1 coach par athlète** (0 ou 1). En MVP, une ligne existe toujours ; en v1.0, son absence = athlète **autonome**.
 - `scheduled_session_exercises` est une **copie** des `session_exercises` : modifier une planif n'altère pas la bibliothèque (répond à « modifier un exercice en cours de planif »).
 - `session_feedback` rattaché à `scheduled_sessions` → le coach relie débrief et séance prescrite.
+
+> **Athlète autonome (v1.0) — impact modèle.** Les tables de contenu (`exercises`, `sessions`, `plans`…) sont rattachées à un **propriétaire** (en MVP : `coach_id`). Pour l'auto-coaching, l'athlète autonome devient propriétaire de son propre contenu. Concevoir dès le MVP cette propriété comme un **`owner_id` générique** (profil propriétaire) plutôt qu'un `coach_id` strict évite une migration lourde en v1.0. À trancher au moment de poser le schéma Prisma (voir §15).
 
 ---
 
@@ -378,6 +385,7 @@ Gratuit au lancement. À structurer ensuite :
 - ~~Débrief par exercice~~ → **tranché** : débrief séance suffit en MVP, par exercice à évaluer plus tard.
 - Les données d'entraînement sont-elles qualifiables de **données de santé** (→ obligation HDS) ? À clarifier juridiquement.
 - Modèle économique : abonnement vs commission — à trancher avant v1.0.
+- **Athlète autonome (v1.0)** : poser la propriété du contenu en `owner_id` générique dès le MVP, ou refactorer à l'arrivée de l'auto-coaching ? À trancher au moment du schéma Prisma (P1).
 
 ---
 

@@ -98,7 +98,7 @@ Composant/hook utilisé par **1 feature** → `feature/<feat>/`. Par **2+** → 
 
 L'isolation des données est garantie **à la couche données**, pas par la seule logique applicative.
 
-- **Invariant** : 1 `Athlete` = exactement 1 `Coach` (unicité en base). 1 `Coach` = N `Athlete`.
+- **Invariant** : 1 `Athlete` a **au plus 1 `Coach`** (0 ou 1, unicité en base). 1 `Coach` = N `Athlete`. MVP : tout athlète est lié à 1 coach ; relation **nullable et réversible** dès le départ pour ne pas bloquer l'athlète **autonome** (0 coach, auto-coaching v1.0).
 - **Tenancy guard** (NestJS) : résout l'acteur courant + sa relation `CoachAthlete` à partir de la session Better Auth, et l'injecte dans le contexte de requête.
 - **Prisma Client Extension** : applique automatiquement le scope tenant à toute requête (filtre `where` par coach/athlète). Aucune query métier ne s'exécute sans scope.
 - **Conséquence** : un coach ne lit/écrit que SES athlètes ; un athlète que SES données. Toute nouvelle entité métier doit être rattachée au tenant.
