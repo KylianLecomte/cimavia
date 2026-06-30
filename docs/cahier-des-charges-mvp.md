@@ -61,7 +61,7 @@ Légende : **MVP** = première version livrable · **v1.0** = première version 
 
 | Fonctionnalité | Version | Notes |
 |----------------|---------|-------|
-| Comptes, rôles, connexion | MVP | email + mot de passe |
+| Comptes, rôles, connexion | MVP | email + mot de passe, reset par e-mail |
 | Liaison coach ↔ athlète (invitation) | MVP | au plus 1 coach par athlète (1 en MVP) |
 | **Athlète autonome** (auto-coaching, sans coach) | v1.0 | 0 coach ; liaison réversible ; l'athlète crée/débriefe ses propres séances |
 | Création d'exercices + documents joints | MVP | PDF/image/lien |
@@ -93,7 +93,9 @@ Légende : **MVP** = première version livrable · **v1.0** = première version 
 ## 5. Description fonctionnelle (MVP)
 
 ### 5.1 Comptes et rôles
-- Inscription / connexion email + mot de passe (OAuth en option v1.0).
+- Inscription / connexion email + mot de passe.
+- Réinitialisation du mot de passe (« mot de passe oublié » → lien de reset par e-mail).
+- OAuth (Google) en option v1.0.
 - Rôle attribué à l'inscription (coach / athlète).
 - Liaison : le coach invite (lien ou code), l'athlète rejoint → relation unique.
 - **Athlète autonome (v1.0) :** un athlète peut rester **sans coach** et s'auto-coacher (création de ses propres exercices/séances/planifications, débrief). La liaison à un coach reste possible plus tard et **réversible** (voir §3).
@@ -135,7 +137,7 @@ Légende : **MVP** = première version livrable · **v1.0** = première version 
 ### 5.8 Messagerie intégrée
 - Conversation 1:1 coach ↔ athlète.
 - Messages **texte, audio, photo, vidéo**.
-- **Asynchrone** : pas de temps réel strict ; les nouveaux messages remontent via notification + rafraîchissement live (websocket Supabase).
+- **Asynchrone** : pas de temps réel strict ; les nouveaux messages remontent via **notification push + polling** (TanStack Query). WebSocket temps réel (NestJS Gateway + Redis) **différé post-MVP**.
 
 ### 5.9 Fiche athlète (coach)
 - **Un champ libre** rattaché à l'athlète (objectifs, points forts/faibles, notes).
@@ -153,7 +155,7 @@ Légende : **MVP** = première version livrable · **v1.0** = première version 
 
 | Domaine | Exigence |
 |--------|----------|
-| **Sécurité** | Auth robuste, HTTPS, médias chiffrés au repos, isolation des données par RLS. |
+| **Sécurité** | Auth robuste (Better Auth), HTTPS, médias en buckets privés (URLs signées), **isolation des données scopée à l'acteur courant** (tenancy guard + Prisma Client Extension). |
 | **RGPD / hébergement** | Données perso + médias : consentement, droit à l'effacement. **Hébergement en France** (résidence MVP, souveraineté visée — voir §7.5). Caveat : si les données sont qualifiées de **santé**, hébergeur **HDS** requis. |
 | **i18n** | Toutes les chaînes externalisées dès le MVP (FR), EN activable en v1.0. |
 | **Médias** | Compression côté client avant upload. Plafonds MVP : vidéo 60 s / 720p / ~50 Mo, **3 vidéos** + **5 photos** (≤1600 px) par débrief. Vidéo = principal poste de coût. |
@@ -167,88 +169,89 @@ Légende : **MVP** = première version livrable · **v1.0** = première version 
 ## 7. Architecture technique
 
 ### 7.1 Vue d'ensemble
-- **Une base de code front unique, universelle** (web + iOS + Android), un seul **back-end managé**.
-- Pas de serveur applicatif custom à maintenir : la logique d'accès aux données passe par l'API auto-générée + la sécurité au niveau base.
+- **Monorepo** (Turborepo + pnpm) : une **API NestJS** + deux clients (**mobile** Expo, **web** React/Vite) + packages partagés (`@cmv/shared`, `@cmv/tokens`, `@cmv/tsconfig`).
+- Le coach travaille surtout sur le **web** (création de contenu), l'athlète surtout sur **mobile** (consultation/débrief en salle) — mais les deux rôles accèdent aux deux clients.
+- Toute la logique métier et l'accès aux données passent par l'**API NestJS** : isolation multi-tenant garantie à la couche données (tenancy guard + Prisma Client Extension), pas par la seule logique applicative.
 
 ```
-┌──────────────────────────────────────────┐
-│  App universelle Expo (TypeScript/React)  │
-│  Web (coach+athlète) │ iOS │ Android       │
-└───────────────┬──────────────────────────┘
-                │  SDK Supabase (REST/Realtime/Storage/Auth)
-┌───────────────▼──────────────────────────┐
-│  Supabase                                 │
-│  Postgres + RLS │ Auth │ Storage │ Realtime│
-│  Edge Functions (notifs, logique serveur) │
-└───────────────────────────────────────────┘
+┌────────────────────────┐   ┌────────────────────────┐
+│  Mobile — Expo SDK 56   │   │  Web — React + Vite     │
+│  Expo Router / NativeWind│  │  TanStack Router / Query│
+└───────────┬─────────────┘   └────────────┬───────────┘
+            │      HTTP (DTO @cmv/shared, validés Zod)  │
+            └──────────────┬────────────────────────────┘
+                ┌──────────▼─────────────────────────────┐
+                │  API — NestJS (modules par feature)     │
+                │  Better Auth │ Tenancy guard            │
+                │  Prisma 7 + extension (scope tenant)    │
+                └──────────┬───────────────┬──────────────┘
+                ┌──────────▼──────┐  ┌──────▼──────────────┐
+                │  PostgreSQL 18  │  │  Object Storage S3   │
+                │  (Neon → Clever)│  │  (Scaleway / Cellar) │
+                └─────────────────┘  └──────────────────────┘
 ```
 
 ### 7.2 Stack proposée (et justification)
 
 | Couche | Choix | Pourquoi |
 |--------|-------|----------|
-| Front (web+mobile) | **Expo / React Native** (SDK 56, RN 0.85 — *vérifier la dernière version stable au démarrage, sortie 3×/an*) | Universel par défaut : **une base de code** → iOS, Android, web. Idéal pour un dev solo qui doit livrer les 2 clients pour les 2 rôles. |
-| Routing | **Expo Router** (file-based, universel) | Mêmes routes sur web et natif, moins de code spécifique plateforme. |
-| Langage | **TypeScript** | Typage partagé front ↔ schéma DB (types générés depuis Supabase). |
-| Données serveur | **TanStack Query** | Cache, synchro, support offline du cache. |
-| État local léger | **Zustand** | Simple, sans boilerplate. |
-| Back-end | **Supabase** (Postgres 17, Auth, Storage, Realtime, Edge Functions) | BaaS complet : pas de serveur à écrire, **RLS** pour le multi-tenant, websockets pour la messagerie, storage pour les médias. Free tier généreux pour démarrer (≈ 500 Mo DB, 1 Go storage, 50k utilisateurs actifs/mois — à confirmer). |
-| Médias | **Supabase Storage** (compatible S3, sécurisé par RLS, transformation d'images) | Suffisant en MVP. Prévoir bascule vers stockage objet externe (ex. R2/S3) si le volume vidéo explose. |
-| Auth | **Supabase Auth** (email/mot de passe ; OAuth/passkeys plus tard) | Intégré au RLS via `auth.uid()`. |
-| Notifications | **expo-notifications** + Edge Functions Supabase (déclenchées par triggers DB) | Push natif + web. |
+| Mobile | **Expo SDK 56 / React Native** (Expo Router, NativeWind — *vérifier la dernière version stable au démarrage, sortie 3×/an*) | Client athlète au quotidien ; New Architecture, Dev Build. |
+| Web | **React 19 + Vite** (TanStack Router + Query, Tailwind v3) | Surface principale du coach (création de contenu). Pas de Next.js. |
+| Langage | **TypeScript strict** partout | Types métier (DTO) + schémas Zod **partagés** front ↔ back via `@cmv/shared`. |
+| Données serveur | **TanStack Query** | Cache, synchro, persistance du cache (lecture offline). |
+| API | **NestJS 11** (modules par feature) | Logique métier, validation Zod, observabilité, point d'application du multi-tenant. |
+| ORM / DB | **Prisma 7** (adapter-pg) + **PostgreSQL 18** | `prisma migrate` natif. Une instance `PrismaClient` unique, étendue (scope tenant). |
+| Auth | **Better Auth** (`@thallesp/nestjs-better-auth`, `@better-auth/expo`) | Email/mot de passe + reset en MVP ; OAuth Google en v1.0. Session résolue par le tenancy guard. |
+| Multi-tenant | **Tenancy guard + Prisma Client Extension** | Isolation à la couche données (pas de RLS). Voir §9. |
+| Médias | **Object storage S3** (`@aws-sdk/client-s3` → Scaleway) | Buckets privés, URLs signées. Jamais le binaire en BDD. |
+| Notifications | **expo-server-sdk** (côté NestJS) + **expo-notifications** (clients) | Push natif déclenché par l'API sur événements métier. |
+| Observabilité | **Pino → Axiom** + **Sentry** (3 couches) | Logs JSON structurés ; erreurs centralisées. |
 | i18n | **i18next** + `expo-localization` | Chaînes externalisées, FR puis EN. |
-| Hébergement | **Supabase Cloud — région Europe (Paris)** en MVP ; option d'auto-hébergement sur cloud souverain FR (Scaleway/OVHcloud/Clever Cloud) en v1.0 | Données en France dès le MVP ; bascule souveraine possible car Supabase est open-source (voir §7.5). |
+| Hébergement | **MVP gratuit** : API → Scaleway Serverless Containers · médias → Scaleway Object Storage · DB → **Neon free** (EU). **v1.0 FR** : Clever Cloud (app + PostgreSQL + Redis + Cellar S3, HDS). | Données en France/EU ; portabilité par variables d'env (voir §7.5). Redis **différé** en MVP. |
 | Paiement (v1.0) | **Stripe** (Connect si reversement au coach) | Standard, bien documenté. |
 
-> Alternative back-end : back-end custom (Node/NestJS + Postgres + S3). Plus de contrôle mais **beaucoup** plus de travail pour un dev solo. Non recommandé en MVP.
+> Choix assumé d'une **API custom NestJS** plutôt qu'un BaaS : plus de travail initial, mais contrôle total du modèle multi-tenant, **portabilité d'hébergement** (rien de propriétaire) et typage partagé bout-en-bout. Redis (cache / WebSocket) est **différé** au-delà du MVP.
 
-### 7.3 Structure de projet (proposée)
-Application Expo universelle unique (le plus simple à maintenir en solo) :
+### 7.3 Structure de projet (monorepo Turborepo + pnpm)
 
 ```
-app/                    # routes Expo Router (universel)
-  (auth)/               # connexion, inscription
-  (coach)/              # espaces coach (exercices, séances, planifs, facturation, athlètes)
-  (athlete)/            # espaces athlète (planning, débrief, factures)
-  (shared)/             # messagerie, profil
-components/             # UI réutilisable
-lib/
-  supabase.ts           # client Supabase
-  queries/              # hooks TanStack Query
-  i18n/                 # fr.json, en.json
-types/
-  database.types.ts     # types générés depuis Supabase
-supabase/
-  migrations/           # SQL versionné (schéma + RLS)
-  functions/            # Edge Functions (notifications…)
+apps/
+  api/        # NestJS — modules par feature : auth, account, exercise,
+              #   session, plan, feedback, message, invoice + infra/ (prisma, storage, redis)
+  mobile/     # Expo Router + NativeWind — app/ (routing) + feature/ + shared/
+  web/        # React + Vite + TanStack Router/Query — feature/ + shared/
+packages/
+  shared/     # @cmv/shared — types métier (DTO) + schémas Zod, logique pure (front+back)
+  tokens/     # @cmv/tokens — couleurs/spacing/typo → Tailwind (web) + NativeWind (mobile)
+  tsconfig/   # @cmv/tsconfig — configs TS de base
 ```
 
-L'affichage est conditionné par le **rôle** (`profiles.role`), pas par la plateforme : le même code sert web et mobile.
+L'affichage est conditionné par le **rôle** (`User.role`), pas par la plateforme : les deux rôles accèdent aux deux clients. Conventions détaillées par couche dans `architecture-choice.md`.
 
 ### 7.4 Environnements
-- **local** (Supabase CLI + Postgres local), **staging**, **production**.
-- Schéma et policies RLS versionnés dans `supabase/migrations` (jamais de modif manuelle non versionnée en prod).
+- **local** (Docker `postgres:18-alpine`), **staging**, **production** (GitLab Flow : `feature/*` → `main` → `staging` → `production`).
+- Schéma versionné via **migrations Prisma** (`prisma migrate`) ; jamais de modif manuelle non versionnée en prod. BDD MVP = Neon free (Prisma-natif).
 
 ### 7.5 Hébergement français : résidence vs souveraineté
 Deux niveaux à ne pas confondre :
 
-- **Résidence (MVP) :** Supabase Cloud, **région Europe (Paris)**. Données physiquement en France, RGPD respecté, démarrage immédiat. *Limite :* Supabase Inc. est une société US et l'infra est AWS → résidence française mais pas souveraineté stricte (exposition Cloud Act / Schrems II).
-- **Souveraineté (v1.0, si argument commercial) :** auto-héberger Supabase (open-source) sur un **cloud souverain français** — Scaleway, OVHcloud ou Clever Cloud. Le client `supabase-js` est inchangé, seule l'URL pointe vers l'instance auto-hébergée ; la migration est mécaniquement propre. *Coût :* exploitation à ta charge (sauvegardes, mises à jour, TLS, SMTP, stockage).
+- **MVP (gratuit, résidence FR/EU) :** API → **Scaleway Serverless Containers** (scale-to-zero), médias → **Scaleway Object Storage** (FR), BDD → **Neon free** (EU, Prisma-natif), web → Cloudflare Pages/Scaleway. Démarrage immédiat, coût nul. *Limite :* Neon est une société US → résidence EU mais pas souveraineté stricte (exposition Cloud Act / Schrems II).
+- **Souveraineté (v1.0) :** bascule **Clever Cloud** — app + **PostgreSQL** + **Redis** + **Cellar** (S3-compatible), **HDS** intégré (hébergeur français). La bascule = **variables d'environnement** (`DATABASE_URL`, endpoint S3…), rien de propriétaire : migration mécaniquement propre.
 
-**Décision :** démarrer en région Paris, **concevoir portable** (pas de dépendance à une fonctionnalité propriétaire Supabase Cloud) pour pouvoir basculer vers un hébergeur souverain FR sans réécriture.
+**Décision :** démarrer gratuit (Scaleway + Neon), **concevoir portable** (aucune dépendance à une fonctionnalité propriétaire) pour basculer vers Clever Cloud (souverain FR) sans réécriture.
 
-**Caveat HDS :** si les données d'entraînement sont qualifiées de données de santé, l'hébergement devra être **HDS** (OVHcloud et Scaleway proposent des offres certifiées).
+**Caveat HDS :** si les données d'entraînement sont qualifiées de données de santé, l'hébergement devra être **HDS** (Clever Cloud, OVHcloud et Scaleway proposent des offres certifiées).
 
 ---
 
 ## 8. Modèle de données (détaillé)
 
-> Convention : `id uuid` (PK), `created_at`/`updated_at timestamptz`. Toutes les tables ont la **RLS activée**.
+> Convention : `id` (PK), `created_at`/`updated_at`. Schéma posé en **Prisma** (P1) ; l'isolation tenant est appliquée par l'extension Prisma (§9), **pas par RLS**. Better Auth gère ses propres tables (sessions, comptes) à côté de `users`.
 
 ### 8.1 Tables
 
-**profiles** (miroir de `auth.users`)
-- `id` (= auth.users.id), `role` enum(`coach`,`athlete`,`admin`), `full_name`, `avatar_url`, `locale` (`fr`/`en`)
+**users** (compte Better Auth + profil)
+- `id`, `email`, `role` enum(`coach`,`athlete`,`admin`), `full_name`, `avatar_url`, `locale` (`fr`/`en`)
 
 **coach_athlete** (relation, 1 coach par athlète)
 - `coach_id` → profiles, `athlete_id` → profiles **UNIQUE**, `status` enum(`pending`,`active`), `invited_at`, `joined_at`
@@ -304,37 +307,18 @@ Deux niveaux à ne pas confondre :
 
 ---
 
-## 9. Sécurité et multi-tenant (RLS)
+## 9. Sécurité et multi-tenant
 
-La séparation des données repose entièrement sur la **Row Level Security** Postgres, combinée à Supabase Auth (`auth.uid()`). Principe : **activer RLS sur chaque table** et n'autoriser que les lignes liées à l'utilisateur.
+L'isolation des données est garantie **à la couche données**, dans l'API NestJS — **pas** par RLS Postgres (tous les accès passent par Prisma, donc l'extension suffit et reste portable).
 
-Exemples de politiques (illustratif, à finaliser) :
+- **Tenancy guard** (NestJS) : à partir de la session Better Auth, résout l'acteur courant (`User`) et sa relation `CoachAthlete`, puis les injecte dans le contexte de requête.
+- **Prisma Client Extension** : applique automatiquement le scope tenant (filtre `where` par coach/athlète) à **toute** requête métier. Aucune query ne s'exécute hors scope.
+- **Invariant** : un coach ne lit/écrit que SES athlètes ; un athlète (lié ou autonome) que SES données. Toute nouvelle entité métier doit être rattachée au tenant.
+- **Médias** : buckets **privés** en object storage ; accès uniquement via **URLs signées** générées par l'API après contrôle du scope (jamais d'accès direct au bucket).
+- **Messagerie** : les conversations sont scopées par la relation ; un utilisateur ne lit que les messages de SES conversations.
+- **Tests e2e d'isolation obligatoires** : vérifier qu'un coach A ne peut jamais lire/écrire les données d'un athlète du coach B.
 
-```sql
--- Un athlète lit ses propres débriefs ; son coach aussi.
-create policy "feedback_select"
-on session_feedback for select
-using (
-  athlete_id = auth.uid()
-  or exists (
-    select 1 from coach_athlete ca
-    where ca.athlete_id = session_feedback.athlete_id
-      and ca.coach_id = auth.uid()
-      and ca.status = 'active'
-  )
-);
-
--- Seul l'athlète concerné insère son débrief.
-create policy "feedback_insert"
-on session_feedback for insert
-with check (athlete_id = auth.uid());
-```
-
-Points d'attention :
-- Le **Storage** s'appuie aussi sur RLS (politiques sur `storage.objects`) : un athlète n'accède qu'à ses médias et ceux que son coach lui partage.
-- Le **Realtime** (messagerie) respecte les policies SELECT : un utilisateur ne reçoit en live que les messages de ses conversations.
-- Ne jamais exposer la `service_role` côté client (elle contourne la RLS).
-- Adopter RLS **dès le départ** plutôt que de gérer l'autorisation dans le code applicatif.
+> Décidé dès le départ plutôt que de gérer l'autorisation au cas par cas dans chaque service. Détail dans `architecture-choice.md` §6.
 
 ---
 
@@ -342,7 +326,7 @@ Points d'attention :
 - Capture via `expo-camera` / `expo-image-picker`.
 - **Compression côté client** avant upload (réduction du coût stockage/bande passante).
 - **Plafonds MVP :** vidéo **60 s max**, **720p max**, **~50 Mo max**, **3 vidéos** par débrief ; photos **5 max**, réduites à ~1600 px. Plafonds facilement assouplis ensuite.
-- Upload vers Supabase Storage (bucket privé, accès via RLS / URLs signées).
+- Upload vers l'**object storage S3** (Scaleway en MVP) : bucket **privé**, accès via **URLs signées** délivrées par l'API.
 - Vidéos = principal poste de coût : ces plafonds gardent les coûts prévisibles ; bascule vers stockage objet externe + CDN si le volume grandit.
 
 ---
@@ -356,7 +340,7 @@ Points d'attention :
 ---
 
 ## 12. Notifications et offline
-- **Notifications push** (`expo-notifications`) déclenchées par des Edge Functions sur événements DB (nouvelle planif, modif, message, facture).
+- **Notifications push** : `expo-notifications` (clients) + `expo-server-sdk` côté **NestJS**, déclenchées par l'API sur événements métier (nouvelle planif, modif, message, facture).
 - **Offline (lecture)** : cache des séances de la semaine via persistance TanStack Query (+ stockage local type MMKV/SQLite). L'écriture (débrief) peut être différée et synchronisée à la reconnexion (amélioration possible post-MVP).
 
 ---
@@ -380,7 +364,7 @@ Gratuit au lancement. À structurer ensuite :
 ---
 
 ## 15. Questions ouvertes restantes
-- ~~Région d'hébergement~~ → **tranché : France** (région Paris en MVP, souveraineté FR visée en v1.0, voir §7.5).
+- ~~Région d'hébergement~~ → **tranché : France/EU** (Scaleway + Neon EU en MVP gratuit, souveraineté FR via Clever Cloud en v1.0, voir §7.5).
 - ~~Limites vidéo MVP~~ → **tranché** : 60 s / 720p / ~50 Mo, 3 vidéos + 5 photos par débrief.
 - ~~Débrief par exercice~~ → **tranché** : débrief séance suffit en MVP, par exercice à évaluer plus tard.
 - Les données d'entraînement sont-elles qualifiables de **données de santé** (→ obligation HDS) ? À clarifier juridiquement.
@@ -389,4 +373,4 @@ Gratuit au lancement. À structurer ensuite :
 
 ---
 
-*Document de travail à itérer. Les versions des outils (Expo SDK, Postgres, Supabase) évoluant régulièrement, vérifier les dernières versions stables au démarrage du projet.*
+*Document de travail à itérer. Les versions des outils (Expo SDK, NestJS, Prisma, Postgres) évoluant régulièrement, vérifier les dernières versions stables au démarrage du projet.*
