@@ -26,11 +26,12 @@ Maquettes d'écrans produites via **Claude Design** (format `*.dc.html`), track 
 | `shared/auth_onboarding.dc.html` | pd-3 | Auth & onboarding (connexion, inscription, rôle, invitation) + états erreur/chargement | P1 | ✅ |
 | `web-coach/coach_dashboard_athletes.dc.html` | pd-4 | Dashboard coach + liste des athlètes (+ vide + skeleton) | P1 | ✅ |
 | `web-coach/coach_fiche_athlete.dc.html` | pd-5 | Fiche athlète (AthleteProfile) + note édition/vide | P1 | ✅ |
-| `web-coach/coach_bibliotheque.dc.html` | pd-6 | Bibliothèque : Exercise (liste + form) + SessionBuilder | P2 | ✅ |
+| `web-coach/coach_bibliotheque.dc.html` | pd-6 | Bibliothèque : Exercise (liste + form) + SessionBuilder + onglet Séances + état vide | P2 | ✅ |
 | `web-coach/coach_facturation.dc.html` | pd-8 | Émission & suivi de factures (Invoice) + vide | P6 | ✅ |
 | `mobile-athlete/athlete_debrief_seance.dc.html` | pd-10 | Débrief de séance (SessionFeedback + médias) + vide/upload/erreur | P4 | ✅ |
 | `mobile-athlete/athlete_factures.dc.html` | pd-11 | Consultation factures (athlète) + détail | P6 | ✅ |
-| `shared/conversation_1_1.dc.html` | pd-12 | Conversation 1:1 web + mobile, Composer texte/audio/médias | P5 | ✅ |
+| `shared/conversation_1_1.dc.html` | pd-12 | Conversation 1:1 web + mobile, Composer texte/audio/médias + états vides + message non envoyé/hors-ligne | P5 | ✅ |
+| `mobile-athlete/athlete_profile.dc.html` | pd-13 | Profil athlète (accès factures, mon coach, compte, langue, déconnexion) | P1 | ✅ |
 
 ## Écarts MVP repérés dans les maquettes (à trancher avant implémentation)
 
