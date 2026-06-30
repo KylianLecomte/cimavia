@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="design_doc_mode" content="canvas">
+<style>
+  body { margin:0; }
+  *::-webkit-scrollbar { width:10px; height:10px; }
+  *::-webkit-scrollbar-thumb { background:#2b3742; border-radius:8px; border:3px solid #0a0f14; }
+</style>
+</helmet>
+
+<!-- ============================================================ FACTURATION — LISTE ============================================================ -->
+<div style="position:absolute; left:0px; top:0px; width:1440px">
+  <div data-drags-parent="1" style="font:600 13px/1 'IBM Plex Mono',monospace; letter-spacing:.04em; color:#8593a0; margin-bottom:14px; cursor:grab">FACTURATION — LISTE (coach)</div>
+  <div style="width:1440px; height:940px; display:flex; background:#0a0f14; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(0,0,0,.7); font-family:'IBM Plex Sans',sans-serif; color:#eceff3">
+
+    <!-- SIDEBAR -->
+    <div style="width:236px; flex-shrink:0; background:#0e141a; border-right:1px solid #2b3742; display:flex; flex-direction:column; padding:22px 14px">
+      <div style="display:flex; align-items:center; gap:10px; padding:4px 8px 22px">
+        <svg width="24" height="24" viewBox="0 0 22 22" fill="none"><path d="M11 3 L19 18 H3 Z" stroke="#c2603a" stroke-width="1.6" stroke-linejoin="round"></path><circle cx="11" cy="7.4" r="1.5" fill="#c2603a"></circle></svg>
+        <span style="font:700 19px/1 'Space Grotesk',sans-serif; letter-spacing:-.02em; color:#eceff3">Cimavia</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:3px">
+        <div style="display:flex; align-items:center; gap:11px; padding:10px 11px; border-radius:8px; cursor:pointer; color:#aab6c2" style-hover="background:#141d25"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span style="font:500 14px/1 'IBM Plex Sans',sans-serif">Athlètes</span></div>
+        <div style="display:flex; align-items:center; gap:11px; padding:10px 11px; border-radius:8px; cursor:pointer; color:#aab6c2" style-hover="background:#141d25"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11M4 10h11M4 15h7"></path><path d="M19 5v14M19 5l-2.5 2.5M19 5l2.5 2.5"></path></svg><span style="font:500 14px/1 'IBM Plex Sans',sans-serif">Bibliothèque</span></div>
+        <div style="display:flex; align-items:center; gap:11px; padding:10px 11px; border-radius:8px; cursor:pointer; color:#aab6c2" style-hover="background:#141d25"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2.5"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg><span style="font:500 14px/1 'IBM Plex Sans',sans-serif">Planifications</span></div>
+        <div style="display:flex; align-items:center; gap:11px; padding:10px 11px; border-radius:8px; cursor:pointer; color:#aab6c2; position:relative" style-hover="background:#141d25"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"></path></svg><span style="font:500 14px/1 'IBM Plex Sans',sans-serif">Messagerie</span><span style="margin-left:auto; font:600 11px/1 'IBM Plex Mono',monospace; color:#fff; background:#c2603a; padding:3px 7px; border-radius:999px">3</span></div>
+        <div style="display:flex; align-items:center; gap:11px; padding:10px 11px; border-radius:8px; cursor:pointer; background:#1c2630; color:#eceff3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eceff3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"></rect><path d="M3 10h18M7 15h4"></path></svg><span style="font:600 14px/1 'IBM Plex Sans',sans-serif">Facturation</span></div>
+      </div>
+      <div style="margin-top:auto; display:flex; align-items:center; gap:11px; padding:10px; border-top:1px solid #2b3742">
+        <div style="width:34px; height:34px; border-radius:9px; background:#c2603a; display:flex; align-items:center; justify-content:center; font:600 14px/1 'Space Grotesk',sans-serif; color:#fff">MK</div>
+        <div style="line-height:1.3"><div style="font:600 13px/1 'IBM Plex Sans',sans-serif; color:#eceff3">Marc Keller</div><div style="font:500 11px/1 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:3px">Coach</div></div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+
+      <!-- top bar -->
+      <div style="padding:26px 32px 22px; border-bottom:1px solid #2b3742; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; background:#0c1218">
+        <div>
+          <div style="font:700 26px/1 'Space Grotesk',sans-serif; letter-spacing:-.02em; color:#eceff3">Facturation</div>
+          <div style="font:400 14px/1 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:9px">Octobre 2025 · 12 factures émises</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; font:600 14px/1 'IBM Plex Sans',sans-serif; color:#fff; background:#c2603a; padding:11px 18px; border-radius:8px; cursor:pointer" style-hover="background:#d07049"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>Émettre une facture</div>
+      </div>
+
+      <!-- stat strip -->
+      <div style="padding:20px 32px 4px; display:flex; gap:14px">
+        <div style="flex:1; background:#0e141a; border:1px solid #2b3742; border-radius:12px; padding:16px 18px">
+          <div style="font:500 12px/1 'IBM Plex Sans',sans-serif; color:#8593a0">Encaissé ce mois</div>
+          <div style="display:flex; align-items:baseline; gap:8px; margin-top:11px"><span style="font:600 28px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums">1 080 €</span><span style="font:500 12px/1 'IBM Plex Sans',sans-serif; color:#82c79b">9 payées</span></div>
+        </div>
+        <div style="flex:1; background:#0e141a; border:1px solid #2b3742; border-radius:12px; padding:16px 18px">
+          <div style="font:500 12px/1 'IBM Plex Sans',sans-serif; color:#8593a0">En attente</div>
+          <div style="display:flex; align-items:baseline; gap:8px; margin-top:11px"><span style="font:600 28px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums">240 €</span><span style="font:500 12px/1 'IBM Plex Sans',sans-serif; color:#e6c478">2 factures</span></div>
+        </div>
+        <div style="flex:1; background:#0e141a; border:1px solid #2b3742; border-radius:12px; padding:16px 18px">
+          <div style="font:500 12px/1 'IBM Plex Sans',sans-serif; color:#8593a0">En retard</div>
+          <div style="display:flex; align-items:baseline; gap:8px; margin-top:11px"><span style="font:600 28px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums">120 €</span><span style="font:500 12px/1 'IBM Plex Sans',sans-serif; color:#e89089">1 facture</span></div>
+        </div>
+        <div style="flex:1; background:#0e141a; border:1px solid #2b3742; border-radius:12px; padding:16px 18px">
+          <div style="font:500 12px/1 'IBM Plex Sans',sans-serif; color:#8593a0">Total émis</div>
+          <div style="display:flex; align-items:baseline; gap:8px; margin-top:11px"><span style="font:600 28px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums">1 440 €</span><span style="font:500 12px/1 'IBM Plex Sans',sans-serif; color:#8593a0">12 factures</span></div>
+        </div>
+      </div>
+
+      <!-- toolbar -->
+      <div style="padding:18px 32px 14px; display:flex; align-items:center; gap:12px">
+        <div style="display:flex; align-items:center; gap:9px; background:#141d25; border:1px solid #2b3742; border-radius:8px; padding:10px 13px; width:260px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
+          <span style="font:400 13.5px/1 'IBM Plex Sans',sans-serif; color:#5f6c79">Rechercher (athlète, n°…)</span>
+        </div>
+        <div style="display:inline-flex; background:#1c2630; border:1px solid #2b3742; border-radius:8px; padding:3px; gap:2px">
+          <span style="background:#2b3742; color:#eceff3; border-radius:5px; padding:7px 13px; font:600 12.5px/1 'IBM Plex Sans',sans-serif; box-shadow:0 1px 2px rgba(0,0,0,.35)">Toutes</span>
+          <span style="color:#aab6c2; padding:7px 13px; font:500 12.5px/1 'IBM Plex Sans',sans-serif; cursor:pointer">Payées</span>
+          <span style="color:#aab6c2; padding:7px 13px; font:500 12.5px/1 'IBM Plex Sans',sans-serif; cursor:pointer">En attente</span>
+          <span style="color:#aab6c2; padding:7px 13px; font:500 12.5px/1 'IBM Plex Sans',sans-serif; cursor:pointer">En retard</span>
+        </div>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:8px; font:500 13px/1 'IBM Plex Sans',sans-serif; color:#aab6c2; background:#141d25; border:1px solid #2b3742; border-radius:8px; padding:10px 13px; cursor:pointer" style-hover="border-color:#3a4854"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"></path><path d="M5 16v2a2 2 0 002 2h10a2 2 0 002-2v-2"></path></svg>Exporter</div>
+      </div>
+
+      <!-- table -->
+      <div style="flex:1; overflow-y:auto; padding:0 32px 32px">
+        <div style="background:#0e141a; border:1px solid #2b3742; border-radius:12px; overflow:hidden">
+          <div style="display:grid; grid-template-columns:1fr 2fr 1.3fr 1.3fr 1fr 40px; gap:16px; padding:13px 20px; border-bottom:1px solid #2b3742; background:#111922">
+            <span style="font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.08em; text-transform:uppercase; color:#8593a0">N°</span>
+            <span style="font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.08em; text-transform:uppercase; color:#8593a0">Athlète</span>
+            <span style="font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.08em; text-transform:uppercase; color:#8593a0">Émise / Échéance</span>
+            <span style="font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.08em; text-transform:uppercase; color:#8593a0; text-align:right">Montant</span>
+            <span style="font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.08em; text-transform:uppercase; color:#8593a0">Statut</span>
+            <span></span>
+          </div>
+
+          <!-- row payé -->
+          <div style="display:grid; grid-template-columns:1fr 2fr 1.3fr 1.3fr 1fr 40px; gap:16px; padding:15px 20px; border-bottom:1px solid #1a232c; align-items:center; cursor:pointer" style-hover="background:#111922">
+            <span style="font:500 13px/1 'IBM Plex Mono',monospace; color:#aab6c2">F-2025-012</span>
+            <div style="display:flex; align-items:center; gap:11px"><div style="width:32px; height:32px; border-radius:8px; background:#243b30; display:flex; align-items:center; justify-content:center; font:600 12px/1 'Space Grotesk',sans-serif; color:#9fcdb1; flex-shrink:0">LM</div><span style="font:600 13.5px/1 'IBM Plex Sans',sans-serif; color:#eceff3">Léa Moreau</span></div>
+            <div><div style="font:500 12.5px/1 'IBM Plex Sans',sans-serif; color:#aab6c2">1 oct. 2025</div><div style="font:500 11.5px/1 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:4px">éch. 15 oct.</div></div>
+            <span style="font:600 14px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums; text-align:right">120,00 €</span>
+            <span><span style="font:600 11.5px/1 'IBM Plex Sans',sans-serif; color:#9fcdb1; background:rgba(78,154,106,.16); border:1px solid rgba(78,154,106,.34); padding:5px 10px; border-radius:7px; display:inline-flex; align-items:center; gap:5px">● Payé</span></span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5f6c79" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg>
+          </div>
+
+          <!-- row en attente -->
+          <div style="display:grid; grid-template-columns:1fr 2fr 1.3fr 1.3fr 1fr 40px; gap:16px; padding:15px 20px; border-bottom:1px solid #1a232c; align-items:center; cursor:pointer" style-hover="background:#111922">
+            <span style="font:500 13px/1 'IBM Plex Mono',monospace; color:#aab6c2">F-2025-011</span>
+            <div style="display:flex; align-items:center; gap:11px"><div style="width:32px; height:32px; border-radius:8px; background:#3a2f24; display:flex; align-items:center; justify-content:center; font:600 12px/1 'Space Grotesk',sans-serif; color:#e6c478; flex-shrink:0">TR</div><span style="font:600 13.5px/1 'IBM Plex Sans',sans-serif; color:#eceff3">Thomas Rey</span></div>
+            <div><div style="font:500 12.5px/1 'IBM Plex Sans',sans-serif; color:#aab6c2">1 oct. 2025</div><div style="font:500 11.5px/1 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:4px">éch. 15 oct.</div></div>
+            <span style="font:600 14px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums; text-align:right">120,00 €</span>
+            <span><span style="font:600 11.5px/1 'IBM Plex Sans',sans-serif; color:#e6c478; background:rgba(214,162,63,.16); border:1px solid rgba(214,162,63,.34); padding:5px 10px; border-radius:7px; display:inline-flex; align-items:center; gap:5px">● En attente</span></span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5f6c79" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg>
+          </div>
+
+          <!-- row en retard -->
+          <div style="display:grid; grid-template-columns:1fr 2fr 1.3fr 1.3fr 1fr 40px; gap:16px; padding:15px 20px; border-bottom:1px solid #1a232c; align-items:center; cursor:pointer" style-hover="background:#111922">
+            <span style="font:500 13px/1 'IBM Plex Mono',monospace; color:#aab6c2">F-2025-009</span>
+            <div style="display:flex; align-items:center; gap:11px"><div style="width:32px; height:32px; border-radius:8px; background:#2e2a3b; display:flex; align-items:center; justify-content:center; font:600 12px/1 'Space Grotesk',sans-serif; color:#b3a8d6; flex-shrink:0">CB</div><span style="font:600 13.5px/1 'IBM Plex Sans',sans-serif; color:#eceff3">Camille Bernard</span></div>
+            <div><div style="font:500 12.5px/1 'IBM Plex Sans',sans-serif; color:#aab6c2">15 sept. 2025</div><div style="font:500 11.5px/1 'IBM Plex Sans',sans-serif; color:#e89089; margin-top:4px">éch. 30 sept.</div></div>
+            <span style="font:600 14px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums; text-align:right">120,00 €</span>
+            <span><span style="font:600 11.5px/1 'IBM Plex Sans',sans-serif; color:#e89089; background:rgba(210,86,75,.16); border:1px solid rgba(210,86,75,.34); padding:5px 10px; border-radius:7px; display:inline-flex; align-items:center; gap:5px">● En retard</span></span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5f6c79" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg>
+          </div>
+
+          <!-- row payé -->
+          <div style="display:grid; grid-template-columns:1fr 2fr 1.3fr 1.3fr 1fr 40px; gap:16px; padding:15px 20px; border-bottom:1px solid #1a232c; align-items:center; cursor:pointer" style-hover="background:#111922">
+            <span style="font:500 13px/1 'IBM Plex Mono',monospace; color:#aab6c2">F-2025-010</span>
+            <div style="display:flex; align-items:center; gap:11px"><div style="width:32px; height:32px; border-radius:8px; background:#243b30; display:flex; align-items:center; justify-content:center; font:600 12px/1 'Space Grotesk',sans-serif; color:#9fcdb1; flex-shrink:0">EG</div><span style="font:600 13.5px/1 'IBM Plex Sans',sans-serif; color:#eceff3">Emma Girard</span></div>
+            <div><div style="font:500 12.5px/1 'IBM Plex Sans',sans-serif; color:#aab6c2">1 oct. 2025</div><div style="font:500 11.5px/1 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:4px">éch. 15 oct.</div></div>
+            <span style="font:600 14px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums; text-align:right">120,00 €</span>
+            <span><span style="font:600 11.5px/1 'IBM Plex Sans',sans-serif; color:#9fcdb1; background:rgba(78,154,106,.16); border:1px solid rgba(78,154,106,.34); padding:5px 10px; border-radius:7px; display:inline-flex; align-items:center; gap:5px">● Payé</span></span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5f6c79" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg>
+          </div>
+
+          <!-- row payé -->
+          <div style="display:grid; grid-template-columns:1fr 2fr 1.3fr 1.3fr 1fr 40px; gap:16px; padding:15px 20px; align-items:center; cursor:pointer" style-hover="background:#111922">
+            <span style="font:500 13px/1 'IBM Plex Mono',monospace; color:#aab6c2">F-2025-008</span>
+            <div style="display:flex; align-items:center; gap:11px"><div style="width:32px; height:32px; border-radius:8px; background:#243440; display:flex; align-items:center; justify-content:center; font:600 12px/1 'Space Grotesk',sans-serif; color:#8fb8cc; flex-shrink:0">NF</div><span style="font:600 13.5px/1 'IBM Plex Sans',sans-serif; color:#eceff3">Noah Fontaine</span></div>
+            <div><div style="font:500 12.5px/1 'IBM Plex Sans',sans-serif; color:#aab6c2">15 sept. 2025</div><div style="font:500 11.5px/1 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:4px">éch. 30 sept.</div></div>
+            <span style="font:600 14px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums; text-align:right">90,00 €</span>
+            <span><span style="font:600 11.5px/1 'IBM Plex Sans',sans-serif; color:#9fcdb1; background:rgba(78,154,106,.16); border:1px solid rgba(78,154,106,.34); padding:5px 10px; border-radius:7px; display:inline-flex; align-items:center; gap:5px">● Payé</span></span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5f6c79" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="19" cy="12" r="1.4"></circle></svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ ÉMISSION D'UNE FACTURE ============================================================ -->
+<div style="position:absolute; left:1540px; top:0px; width:560px">
+  <div data-drags-parent="1" style="font:600 13px/1 'IBM Plex Mono',monospace; letter-spacing:.04em; color:#8593a0; margin-bottom:14px; cursor:grab">ÉMISSION D'UNE FACTURE (panneau)</div>
+  <div style="width:560px; background:#0e141a; border:1px solid #2b3742; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(0,0,0,.7); font-family:'IBM Plex Sans',sans-serif; color:#eceff3">
+
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid #2b3742">
+      <div>
+        <div style="font:700 18px/1 'Space Grotesk',sans-serif; letter-spacing:-.01em; color:#eceff3">Émettre une facture</div>
+        <div style="font:400 12.5px/1 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:7px">N° F-2025-013 · généré automatiquement</div>
+      </div>
+      <div style="width:32px; height:32px; border-radius:8px; background:#1c2630; border:1px solid #2b3742; display:flex; align-items:center; justify-content:center; cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aab6c2" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+    </div>
+
+    <div style="padding:22px 24px; display:flex; flex-direction:column; gap:18px">
+
+      <!-- athlète -->
+      <div>
+        <div style="font:500 13px/1 'IBM Plex Sans',sans-serif; color:#aab6c2; margin-bottom:8px">Athlète <span style="color:#c2603a">*</span></div>
+        <div style="display:flex; align-items:center; gap:11px; background:#1c2630; border:1.5px solid #c2603a; border-radius:8px; padding:10px 13px; box-shadow:0 0 0 3px rgba(194,96,58,.14)">
+          <div style="width:30px; height:30px; border-radius:8px; background:#243b30; display:flex; align-items:center; justify-content:center; font:600 11px/1 'Space Grotesk',sans-serif; color:#9fcdb1">LM</div>
+          <span style="font:500 14px/1 'IBM Plex Sans',sans-serif; color:#eceff3">Léa Moreau</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><path d="M6 9l6 6 6-6"></path></svg>
+        </div>
+      </div>
+
+      <!-- description / lignes -->
+      <div>
+        <div style="font:500 13px/1 'IBM Plex Sans',sans-serif; color:#aab6c2; margin-bottom:8px">Prestation</div>
+        <div style="background:#141d25; border:1px solid #2b3742; border-radius:8px; overflow:hidden">
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid #2b3742">
+            <span style="flex:1; font:400 14px/1.3 'IBM Plex Sans',sans-serif; color:#eceff3">Forfait coaching — octobre 2025</span>
+            <span style="font:600 14px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums">120,00 €</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5f6c79" stroke-width="2" stroke-linecap="round" style="cursor:pointer"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; padding:11px 14px; cursor:pointer; color:#aab6c2" style-hover="color:#e8966f"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg><span style="font:600 12.5px/1 'IBM Plex Sans',sans-serif">Ajouter une ligne</span></div>
+        </div>
+      </div>
+
+      <!-- dates -->
+      <div style="display:flex; gap:12px">
+        <div style="flex:1">
+          <div style="font:500 13px/1 'IBM Plex Sans',sans-serif; color:#aab6c2; margin-bottom:8px">Date d'émission</div>
+          <div style="display:flex; align-items:center; gap:9px; background:#141d25; border:1px solid #2b3742; border-radius:8px; padding:12px 13px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2.5"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg><span style="font:400 14px/1 'IBM Plex Sans',sans-serif; color:#eceff3">15 oct. 2025</span></div>
+        </div>
+        <div style="flex:1">
+          <div style="font:500 13px/1 'IBM Plex Sans',sans-serif; color:#aab6c2; margin-bottom:8px">Échéance</div>
+          <div style="display:flex; align-items:center; gap:9px; background:#141d25; border:1px solid #2b3742; border-radius:8px; padding:12px 13px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2.5"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg><span style="font:400 14px/1 'IBM Plex Sans',sans-serif; color:#eceff3">30 oct. 2025</span></div>
+        </div>
+      </div>
+
+      <!-- total -->
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#141d25; border:1px solid #2b3742; border-radius:9px">
+        <span style="font:600 14px/1 'IBM Plex Sans',sans-serif; color:#aab6c2">Total à régler</span>
+        <span style="font:700 22px/1 'IBM Plex Mono',monospace; color:#eceff3; font-variant-numeric:tabular-nums">120,00 €</span>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:9px; padding:11px 13px; background:#0c1218; border:1px solid #2b3742; border-radius:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8593a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-top:1px; flex-shrink:0"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16.5v.01"></path></svg>
+        <span style="font:400 12.5px/1.5 'IBM Plex Sans',sans-serif; color:#8593a0">La facture sera envoyée à Léa par e-mail et apparaîtra dans son espace, au statut <b style="color:#e6c478; font-weight:600">En attente</b>.</span>
+      </div>
+
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 24px; border-top:1px solid #2b3742; background:#0c1218">
+      <div style="font:600 13.5px/1 'IBM Plex Sans',sans-serif; color:#aab6c2; padding:11px 14px; border-radius:8px; cursor:pointer" style-hover="color:#eceff3">Enregistrer en brouillon</div>
+      <div style="display:flex; align-items:center; gap:8px; font:600 13.5px/1 'IBM Plex Sans',sans-serif; color:#fff; background:#c2603a; padding:12px 18px; border-radius:8px; cursor:pointer" style-hover="background:#d07049"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></svg>Émettre &amp; envoyer</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ FACTURATION — ÉTAT VIDE ============================================================ -->
+<div style="position:absolute; left:2160px; top:0px; width:620px">
+  <div data-drags-parent="1" style="font:600 13px/1 'IBM Plex Mono',monospace; letter-spacing:.04em; color:#8593a0; margin-bottom:14px; cursor:grab">FACTURATION — ÉTAT VIDE</div>
+  <div style="width:620px; height:520px; background:#0a0f14; border:1px solid #2b3742; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(0,0,0,.7); font-family:'IBM Plex Sans',sans-serif; color:#eceff3; display:flex; flex-direction:column">
+    <div style="padding:24px 28px 20px; border-bottom:1px solid #2b3742; background:#0c1218">
+      <div style="font:700 22px/1 'Space Grotesk',sans-serif; letter-spacing:-.02em; color:#eceff3">Facturation</div>
+      <div style="font:400 13px/1 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:8px">Aucune facture émise pour l'instant.</div>
+    </div>
+    <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:30px">
+      <div style="text-align:center; max-width:360px">
+        <div style="width:80px; height:80px; border-radius:20px; background:#0e141a; border:1px solid #2b3742; display:flex; align-items:center; justify-content:center; margin:0 auto"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#5f6c79" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></div>
+        <div style="font:600 19px/1.2 'Space Grotesk',sans-serif; color:#eceff3; margin-top:22px">Pas encore de facture</div>
+        <div style="font:400 14px/1.6 'IBM Plex Sans',sans-serif; color:#8593a0; margin-top:10px">Émets ta première facture pour un athlète. Elle apparaîtra ici et dans son espace.</div>
+        <div style="display:inline-flex; align-items:center; gap:8px; margin-top:22px; font:600 14px/1 'IBM Plex Sans',sans-serif; color:#fff; background:#c2603a; padding:12px 18px; border-radius:8px; cursor:pointer" style-hover="background:#d07049"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>Émettre une facture</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
