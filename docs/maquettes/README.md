@@ -23,11 +23,20 @@ Maquettes d'écrans produites via **Claude Design** (format `*.dc.html`), track 
 | `shared/design_system.dc.html` | pd-1, pd-2 | Design system (tokens + atoms) | P0-14 | ✅ |
 | `mobile-athlete/athlete-planning_semaine.dc.html` | pd-9 | Planning athlète — vue semaine | P3 | ✅ |
 | `web-coach/coach_builder_planification.dc.html` | pd-7 | Builder de planification (coach) | P3 | ✅ |
-| `shared/` _(à produire)_ | pd-3 | Auth & onboarding (connexion, inscription, rôle, invitation) | P1 | ⬜ |
-| `web-coach/` _(à produire)_ | pd-4 | Dashboard coach + liste des athlètes | P1 | ⬜ |
-| `web-coach/` _(à produire)_ | pd-5 | Fiche athlète (AthleteProfile) | P1 | ⬜ |
-| `web-coach/` _(à produire)_ | pd-6 | Bibliothèque : Exercise (liste + form) + SessionBuilder | P2 | ⬜ |
-| `web-coach/` _(à produire)_ | pd-8 | Émission & suivi de factures (Invoice) | P6 | ⬜ |
-| `mobile-athlete/` _(à produire)_ | pd-10 | Débrief de séance (SessionFeedback + médias) | P4 | ⬜ |
-| `mobile-athlete/` _(à produire)_ | pd-11 | Consultation factures (athlète) | P6 | ⬜ |
-| `mobile-athlete/` + `web-coach/` _(à produire)_ | pd-12 | Conversation 1:1 (Composer texte/audio/médias) | P5 | ⬜ |
+| `shared/auth_onboarding.dc.html` | pd-3 | Auth & onboarding (connexion, inscription, rôle, invitation) + états erreur/chargement | P1 | ✅ |
+| `web-coach/coach_dashboard_athletes.dc.html` | pd-4 | Dashboard coach + liste des athlètes (+ vide + skeleton) | P1 | ✅ |
+| `web-coach/coach_fiche_athlete.dc.html` | pd-5 | Fiche athlète (AthleteProfile) + note édition/vide | P1 | ✅ |
+| `web-coach/coach_bibliotheque.dc.html` | pd-6 | Bibliothèque : Exercise (liste + form) + SessionBuilder | P2 | ✅ |
+| `web-coach/coach_facturation.dc.html` | pd-8 | Émission & suivi de factures (Invoice) + vide | P6 | ✅ |
+| `mobile-athlete/athlete_debrief_seance.dc.html` | pd-10 | Débrief de séance (SessionFeedback + médias) + vide/upload/erreur | P4 | ✅ |
+| `mobile-athlete/athlete_factures.dc.html` | pd-11 | Consultation factures (athlète) + détail | P6 | ✅ |
+| `shared/conversation_1_1.dc.html` | pd-12 | Conversation 1:1 web + mobile, Composer texte/audio/médias | P5 | ✅ |
+
+## Écarts MVP repérés dans les maquettes (à trancher avant implémentation)
+
+Les maquettes anticipent quelques éléments **hors périmètre MVP** (cf. `cahier-des-charges-mvp.md` §4). À garder en tête ou à simplifier :
+
+- **pd-11 (factures athlète)** : bouton « Régler · CB/virement » ⇒ **paiement intégré = v1.0** (MVP = paiement externe, l'athlète *consulte* seulement). À retirer/désactiver en MVP.
+- **pd-12 (messagerie)** : indicateur de **frappe** + statut **« en ligne »** ⇒ **temps réel = v2** (MVP = async polling/push). Les accusés de lecture (✓✓) sont OK (`read_at` au modèle).
+- **pd-5 (fiche athlète)** : la fiche MVP = **un champ texte libre** (`AthleteProfile.content`). Les **stats agrégées** (assiduité %, volume), le **niveau structuré** et les **documents attachés à l'athlète** sont post-MVP (suivi/analyse = v1.x). L'éditeur riche (gras/italique/liste) dépasse le « texte libre » — OK si rendu en markdown léger.
+- **pd-8 (facturation)** : le modèle MVP = **montant unique** + statut `pending/paid`. Les **lignes multiples**, le statut **brouillon**, l'**export** et l'**envoi par e-mail** dépassent le minimal — décider de les inclure ou non en MVP. « En retard » = statut **dérivé** (pending + échéance passée), pas un 3ᵉ statut stocké.
